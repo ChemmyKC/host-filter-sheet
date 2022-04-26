@@ -65,8 +65,11 @@ const path = require("path")
       sliceTable($,$("tbody")[j],data)
       data = []
     }
+    $($('table').children().last()).remove()
+    $($('table').children().last()).remove()
     $('.softmerge-inner').css('width', "100% !important");
     $("#doc-title").append("<span style='color:grey'> Last filter update :  " + new Date().toLocaleString() + "</span>")
+    $($("link")[1]).attr("href", "./style.css")
     let root = $.root().prop('outerHTML');
     await fs.writeFile((path.join(__dirname + '/sheet/index.html')), root);
     // return root
@@ -88,10 +91,13 @@ const path = require("path")
     // console.log(filtredData)
   }
 // let sheet = "loading..."
-
-app.listen(3000, async() => {
+const port = process.env.PORT || 3000
+app.use(express.static(__dirname+ '/sheet'))
+app.listen(port, async() => {
 console.log("Application started and Listening on port 3000");
+try{
 await updateSheet()
+}catch(e){console.log(e)}
 setInterval(async()=>{
     try{
     sheet = await updateSheet()
