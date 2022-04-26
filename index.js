@@ -25,10 +25,10 @@ const path = require("path")
           // }
   }
   async function updateSheet() {
-    let hosts = "A14lifee, bae0921, Boss_Tasha, bree69, brialexandra, Capricornia, Carovi, cecejackson, chasedolly, chemmy, darealbigboss, durtydurty, EIGHTTRAY, EnamouredBeauty, FUDGE.H8TERS.I, IndianRosh, hai_noon, hazey_love, HBOMAX, htx_lauhrynn, ilovemyson03, jessicarabbitt, kali_luvv, Ladyy__Kayyy, LootTheBody, Lou1104, lovespeacehappy, mamared, MrsJoness, MrSnatchYaSoul, neeci4376, NICOLAcorreia19, nwabigtee, poetsoul, pumpkinpie1984, queen_of_resin, realtime_tv, rebae, RENZEL_, ShowTymeLive, smalltownheart, soulfulsinger, SouthernBelle95, Stonjalive, streetp, SushiiB, t3ddyst3ady, therealcannamom, Therealkountry, THICCIUMZZ, tpld, ashlenn, goldylocx, bree69, MelodicDreams, Sagittaruis1990, Bossbred, Dee6235, Teebabyparis, YapaYapa, VTWEEZY, 410Dee, 77cortez, 0512020105W, 28Remi10";
+    let hosts = config.hosts;
     let $;
     try{
-    let res = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vT35hQfliBs6sqjOItMa7HsSHd6TXKgnuYLaopIWKkM_pqYvof7XvBo823gee2mgUIWkuOXuvo8CFXj/pubhtml')
+    let res = await fetch(config.sheetUrl)
     $ = await Cheerio.load(await res.text());
     }catch(e){
         return "<h1>Try Again</h1>"
@@ -65,8 +65,9 @@ const path = require("path")
       sliceTable($,$("tbody")[j],data)
       data = []
     }
-    $($('table').children().last()).remove()
-    $($('table').children().last()).remove()
+    $($('tbody').last()).children().last().remove()
+    $($('tbody').last()).children().last().remove()
+    $("#footer").html("Published by Chemmykc, Updated automatically every "+ config.period +" minute")
     $('.softmerge-inner').css('width', "100% !important");
     $("#doc-title").append("<span style='color:grey'> Last filter update :  " + new Date().toLocaleString() + "</span>")
     $($("link")[1]).attr("href", "./style.css")
@@ -91,12 +92,15 @@ const path = require("path")
     // console.log(filtredData)
   }
 // let sheet = "loading..."
+let config;
 const port = process.env.PORT || 3000
 app.use(express.static(__dirname+ '/sheet'))
 app.listen(port, async() => {
 console.log("Application started and Listening on port 3000");
 try{
-await updateSheet()
+  data = await fs.readFile("./config.json");
+  config = JSON.parse(await data.toString());
+  await updateSheet()
 }catch(e){console.log(e)}
 setInterval(async()=>{
     try{
@@ -105,7 +109,7 @@ setInterval(async()=>{
     }catch(e){
         console.log(e)
     }
-},60000)
+},config.period*60000)
 });
 //Add last update date
 //Get css from server
