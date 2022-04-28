@@ -118,6 +118,8 @@ try{
   await updateSheet()
 }catch(e){console.log(e)}
 setInterval(async()=>{
+    let data = await fs.readFile("./config.json");
+    config = JSON.parse(await data.toString());
     try{
     sheet = await updateSheet()
     console.log("updated")
