@@ -110,6 +110,7 @@ const port = process.env.PORT || 3000
 app.use(express.static(__dirname+ '/sheet'))
 app.use(express.static(__dirname+ '/view'))
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.listen(port, async() => {
 console.log("Application started and Listening on port 3000");
 try{
@@ -157,17 +158,18 @@ app.post("/login",(req,res)=>{
 // })
 app.post("/AddMember",async(req,res)=>{
   try{
-    if(config.hosts.includes(req.body.host))
-      res.send("HOST ALREADY EXIST.")
+    if(config.hosts.includes(req.query.host))
+      res.sendStatus(201)
     else{
-      config.hosts.push(req.body.host)
+      config.hosts.push(req.query.host)
       let confi = JSON.stringify(config, null, '\t')
-      console.log('posted')
       await fs.writeFile((path.join(__dirname + "/config.json")),confi)
-      res.send("Host Added sucessfully.")
+      res.sendStatus(200)
     }
   }catch(e){
     console.log(e)
+    try{
     res.sendStatus(404)
+    }catch(e){}
   }
 })

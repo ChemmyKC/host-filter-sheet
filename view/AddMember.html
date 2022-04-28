@@ -38,19 +38,20 @@
 
 </body>
 <script>
-    // let sub = document.querySelector("form")
-    // let user = document.querySelector('#user')
-    // let password = document.querySelector('#password')
-    // sub.onsubmit = (e)=>{
-    //     e.preventDefault()
-    //     let formData = new FormData();
-    //     formData.append('user',user.value)
-    //     formData.append('password',password.value)
-    //     fetch('./login',{
-    //         method: 'post',
-    //         body: formData,
-    //     })
-    // }
+    let sub = document.querySelector("form")
+    let host = document.querySelector('#host')
+    sub.onsubmit = (e)=>{
+        e.preventDefault()
+        fetch('./AddMember?host='+host.value,{
+            method: 'post'
+        }).then(res=>{
+            if(res.status === 200){
+                host.value = "Host Added."
+            }else if(res.status == 201){
+                host.value = "HOST ALREADY EXIST."
+            }
+        })
+    }
 </script>
 </html>
     
